@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יומן נקודות חכם</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#2a7a50;--g2:#1d5c3b;--gl:#4caf7a;--gp:#eaf5ef;--bg:#f2f6f3;--txt:#182e20;--mut:#6a8c72;--brd:#cfe8d8;--warn:#e07000;--red:#c02020}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--txt);direction:rtl}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff;padding:14px 16px 10px;position:sticky;top:0;z-index:200;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.hdr h1{font-size:19px;font-weight:900}
+
+/* BUDGET */
+.bud{background:#fff;padding:10px 16px 8px;border-bottom:2px solid var(--brd)}
+.brow{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.bnums{display:flex;gap:18px}
+.bn{text-align:center}
+.bv{font-size:24px;font-weight:900;line-height:1;color:var(--g)}
+.bv.w{color:var(--warn)}.bv.r{color:var(--red)}
+.bl{font-size:10px;color:var(--mut);font-weight:600}
+.bctl{display:flex;align-items:center;gap:6px}
+.bi{width:50px;border:2px solid var(--brd);border-radius:8px;padding:4px 5px;font-size:14px;font-weight:700;text-align:center;font-family:'Heebo',sans-serif}
+.bi:focus{outline:none;border-color:var(--g)}
+.rst{background:#ffe8e8;color:#b02020;border:none;padding:5px 10px;border-radius:7px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:700;cursor:pointer}
+.pgb{height:9px;background:var(--brd);border-radius:8px;overflow:hidden}
+.pgf{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--gl),var(--g));transition:width .4s,background .3s}
+.pgf.w{background:linear-gradient(90deg,#f0b000,var(--warn))}.pgf.r{background:linear-gradient(90deg,#e05050,var(--red))}
+
+/* TABS */
+.tabs{position:sticky;top:83px;z-index:150;display:flex;background:#fff;border-bottom:2px solid var(--brd)}
+.tab{flex:1;padding:10px 4px;font-size:13px;font-weight:700;color:var(--mut);cursor:pointer;border:none;background:none;font-family:'Heebo',sans-serif;border-bottom:3px solid transparent;transition:all .2s}
+.tab.active{color:var(--g);border-bottom-color:var(--g)}
+.pg{display:none}.pg.active{display:block}
+
+/* SEARCH PAGE */
+.sp{padding:12px 16px 100px}
+.sbox{background:#fff;border-radius:14px;border:2px solid var(--brd);box-shadow:0 2px 10px rgba(42,122,80,.07);margin-bottom:12px}
+.stop{display:flex;align-items:center;gap:8px;padding:10px 12px}
+.sin{flex:1;border:none;outline:none;font-size:15px;font-family:'Heebo',sans-serif;color:var(--txt);background:transparent}
+.sin::placeholder{color:#aac4b4}
+.sbtn{background:var(--g);color:#fff;border:none;border-radius:9px;padding:7px 14px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.sbtn:disabled{background:#aaa}
+.shint{padding:0 12px 8px;font-size:11px;color:var(--mut);line-height:1.5}
+.ldots{display:flex;gap:5px;padding:12px 14px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--g);animation:b .8s infinite}
+.dot:nth-child(2){animation-delay:.16s}.dot:nth-child(3){animation-delay:.32s}
+@keyframes b{0%,80%,100%{transform:scale(.5);opacity:.3}40%{transform:scale(1);opacity:1}}
+.rtit{font-size:11px;font-weight:800;color:var(--mut);letter-spacing:.5px;padding:6px 0 7px;text-transform:uppercase}
+.fc{background:#fff;border-radius:11px;padding:9px 11px;margin-bottom:5px;border:1.5px solid var(--brd);display:flex;align-items:center;gap:8px;box-shadow:0 1px 4px rgba(42,122,80,.05)}
+.fn{flex:1;font-size:13px;font-weight:600;line-height:1.3;min-width:0}
+.sb{display:inline-block;background:var(--gp);color:var(--g);font-size:8px;font-weight:800;border-radius:4px;padding:1px 4px;margin-right:3px;vertical-align:middle}
+.fp{min-width:38px;height:38px;border-radius:9px;background:var(--gp);color:var(--g);font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ab{width:32px;height:32px;border-radius:8px;background:var(--g);color:#fff;font-size:20px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ab:active{background:var(--g2);transform:scale(.9)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.chip{padding:4px 11px;border-radius:18px;border:1.5px solid var(--brd);background:#fff;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;color:var(--mut);cursor:pointer}
+.chip.active{background:var(--g);color:#fff;border-color:var(--g)}
+.nores{text-align:center;padding:20px 0;color:var(--mut);font-size:13px}
+
+/* LOG PAGE */
+.lp{padding:0 0 100px}
+
+/* DAY NAVIGATOR */
+.daynav{background:#fff;border-bottom:2px solid var(--brd);padding:10px 16px;position:sticky;top:133px;z-index:100}
+.daynav-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dn-arrow{width:36px;height:36px;border-radius:50%;border:2px solid var(--brd);background:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;color:var(--g)}
+.dn-arrow:active{background:var(--gp)}.dn-arrow:disabled{color:#ccc;cursor:default}
+.dn-center{flex:1;text-align:center;cursor:pointer}
+.dn-date{font-size:14px;font-weight:800;color:var(--txt)}
+.dn-date.today{color:var(--g)}
+.dn-sub{font-size:11px;color:var(--mut);margin-top:1px}
+.dn-today-btn{font-size:11px;font-weight:700;color:var(--g);background:var(--gp);border:none;padding:4px 10px;border-radius:12px;cursor:pointer;font-family:'Heebo',sans-serif}
+.dn-today-btn:disabled{background:var(--brd);color:var(--mut);cursor:default}
+
+/* DAY BUDGET BAR */
+.daybudbar{background:#fff;padding:6px 16px 10px;border-bottom:2px solid var(--brd)}
+.dbb-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.dbb-pts{display:flex;gap:16px}
+.dbb-n{text-align:center}
+.dbb-v{font-size:20px;font-weight:900;line-height:1;color:var(--g)}
+.dbb-v.w{color:var(--warn)}.dbb-v.r{color:var(--red)}
+.dbb-l{font-size:10px;color:var(--mut);font-weight:600}
+
+.lc-inner{padding:10px 16px}
+
+/* LOG ITEMS */
+.ltt{font-size:15px;font-weight:800;padding:6px 0 9px;display:flex;justify-content:space-between;align-items:center}
+.dbg{background:var(--gp);color:var(--g);font-size:12px;font-weight:700;padding:3px 11px;border-radius:18px}
+.dbg.w{background:#fff3de;color:var(--warn)}.dbg.r{background:#ffe8e8;color:var(--red)}
+.li{display:flex;align-items:center;background:#fff;border-radius:10px;padding:8px 11px;margin-bottom:5px;border:1.5px solid var(--brd)}
+.lt{font-size:11px;color:var(--mut);font-weight:600;min-width:36px;margin-left:7px;flex-shrink:0}
+.ln{flex:1;font-size:13px;font-weight:600;min-width:0}
+.lpts{font-size:14px;font-weight:900;color:var(--g);margin:0 8px;flex-shrink:0}
+.rm{width:26px;height:26px;border-radius:6px;background:#ffe8e8;color:#c00;border:none;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.el{text-align:center;color:var(--mut);padding:28px 0;font-size:13px}
+.el .em{font-size:36px;display:block;margin-bottom:8px}
+
+/* WEEK STRIP */
+.week-strip{display:flex;gap:6px;padding:10px 16px 0;overflow-x:auto;scrollbar-width:none;margin-bottom:4px}
+.week-strip::-webkit-scrollbar{display:none}
+.wday{flex:none;width:46px;border-radius:10px;border:1.5px solid var(--brd);background:#fff;padding:6px 4px;text-align:center;cursor:pointer;transition:all .15s}
+.wday.active{border-color:var(--g);background:var(--gp)}
+.wday.today-marker{border-color:var(--gl)}
+.wday-name{font-size:10px;font-weight:700;color:var(--mut)}
+.wday-num{font-size:14px;font-weight:900;color:var(--txt);margin:2px 0 1px}
+.wday-pts{font-size:9px;font-weight:700;color:var(--mut)}
+.wday-pts.has{color:var(--g)}
+.wday-dot{width:5px;height:5px;border-radius:50%;background:var(--g);margin:2px auto 0;opacity:0}
+.wday-dot.show{opacity:1}
+.wday.active .wday-name,.wday.active .wday-num{color:var(--g)}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid var(--brd);display:flex;z-index:300}
+.nb{flex:1;padding:10px 0 9px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--mut);font-family:'Heebo',sans-serif;font-size:11px;font-weight:700;transition:color .2s}
+.nb .i{font-size:20px}.nb.active{color:var(--g)}
+.toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--g);color:#fff;padding:9px 20px;border-radius:22px;font-size:13px;font-weight:700;opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none;box-shadow:0 4px 14px rgba(42,122,80,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="hdr"><h1>🥗 יומן נקודות חכם</h1></div>
+
+<!-- GLOBAL BUDGET -->
+<div class="bud">
+  <div class="brow">
+    <div class="bnums">
+      <div class="bn"><div class="bv" id="uv">0</div><div class="bl">נצרך היום</div></div>
+      <div class="bn"><div class="bv" id="rv">30</div><div class="bl">נותר היום</div></div>
+    </div>
+    <div class="bctl">
+      <span style="font-size:11px;color:var(--mut)">תקציב יומי:</span>
+      <input class="bi" type="number" id="bi" value="30" min="1" max="200" oninput="saveBud()">
+    </div>
+  </div>
+  <div class="pgb"><div class="pgf" id="pf" style="width:0%"></div></div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" id="tS" onclick="showPg('s')">🔍 חיפוש מזון</button>
+  <button class="tab" id="tL" onclick="showPg('l')">📅 יומן</button>
+</div>
+
+<!-- SEARCH PAGE -->
+<div class="pg active" id="pgS">
+  <div class="sp">
+    <div class="sbox">
+      <div class="stop">
+        <span style="font-size:18px">🤖</span>
+        <input class="sin" id="si" placeholder="חפשי כל מזון... חזה עוף, גבינה בולגרית, פיתה מלאה..." type="text">
+        <button class="sbtn" id="sb" onclick="doSearch()">חפש</button>
+      </div>
+      <div class="shint">חיפוש חכם על כל 700+ מזונות מהחוברת — כולל אכילה בחוץ</div>
+      <div id="ld" style="display:none"><div class="ldots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+    </div>
+    <div id="ar"></div>
+    <div>
+      <div class="rtit">🗂 עיון לפי אות</div>
+      <div class="chips" id="cc"></div>
+      <div id="cr"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOG PAGE -->
+<div class="pg" id="pgL">
+
+  <!-- WEEK STRIP -->
+  <div class="week-strip" id="weekStrip"></div>
+
+  <!-- DAY NAVIGATOR -->
+  <div class="daynav">
+    <div class="daynav-row">
+      <button class="dn-arrow" id="dnPrev" onclick="moveDay(-1)">‹</button>
+      <div class="dn-center" onclick="goToday()">
+        <div class="dn-date" id="dnDate">—</div>
+        <div class="dn-sub" id="dnSub">—</div>
+      </div>
+      <button class="dn-today-btn" id="dnTodayBtn" onclick="goToday()">היום</button>
+      <button class="dn-arrow" id="dnNext" onclick="moveDay(1)">›</button>
+    </div>
+  </div>
+
+  <!-- DAY BUDGET BAR -->
+  <div class="daybudbar">
+    <div class="dbb-row">
+      <div class="dbb-pts">
+        <div class="dbb-n"><div class="dbb-v" id="dUsed">0</div><div class="dbb-l">נצרך</div></div>
+        <div class="dbb-n"><div class="dbb-v" id="dRem">30</div><div class="dbb-l">נותר</div></div>
+      </div>
+      <button class="rst" onclick="resetCurrentDay()">🗑 איפוס יום</button>
+    </div>
+    <div class="pgb"><div class="pgf" id="dpf" style="width:0%"></div></div>
+  </div>
+
+  <!-- LOG CONTENT -->
+  <div class="lc-inner" id="lc"></div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <button class="nb active" id="nS" onclick="showPg('s')"><span class="i">🔍</span><span>חיפוש</span></button>
+  <button class="nb" id="nL" onclick="showPg('l')"><span class="i">📅</span><span>יומן</span></button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DH=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const DHS=['א','ב','ג','ד','ה','ו','ש'];
+const MH=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
+// ── FOOD DATA ──
+const F=[
+{n:"אבוקדו, רבע",p:1,c:"א",s:1},{n:"אבטיח, פרוסה בינונית 250 גרם",p:2,c:"א"},{n:"אבקת אפייה, שקית",p:0,c:"א"},{n:"אבקת חלב, כפית",p:1,c:"א"},{n:"אבקת מרק, כף",p:1,c:"א"},{n:"אגוזי ברזיל, 2 יחידות",p:1,c:"א"},{n:"אגוזי ברזיל, 100 גרם",p:19,c:"א"},{n:"אגוזי לוז, 100 גרם",p:17,c:"א"},{n:"אגוזי לוז, 4 יחידות",p:1,c:"א"},{n:"אגוז מלך טחון, כף",p:2,c:"א"},{n:"אגוז מלך טחון, 100 גרם",p:19,c:"א"},{n:"אגוזי מלך קלופים, 2 יחידות",p:2,c:"א"},{n:"אגוזי מלך קלופים, 100 גרם",p:19,c:"א"},{n:"אגוזי מקדמיה, 5 יחידות",p:2,c:"א"},{n:"אגוזי מקדמיה, 100 גרם",p:20,c:"א"},{n:"אגוזי פקאן עם קליפה, 100 גרם",p:11,c:"א"},{n:"אגוזי פקאן קלופים, 2 יחידות",p:1,c:"א"},{n:"אגוזי פקאן קלופים, 100 גרם",p:17,c:"א"},{n:"אגוזי פקאן מסוכרים, 100 גרם",p:14,c:"א"},{n:"אגוזי קשיו לא קלויים, 100 גרם",p:16,c:"א"},{n:"אגוזי קשיו קלויים, 2 יחידות",p:1,c:"א"},{n:"אגוזי קשיו קלויים, 100 גרם",p:17,c:"א"},{n:"אגבה סירופ, 100 גרם",p:8,c:"א"},{n:"אגס",p:2,c:"א"},{n:"אוזני המן שוקולד, יחידה 40 גרם",p:5,c:"א"},{n:"אוזני המן פרג, יחידה 40 גרם",p:5,c:"א"},{n:"אוכמניות קפואות, 100 גרם",p:1,c:"א"},{n:"אוכמניות טריות, 100 גרם",p:1,c:"א"},{n:"אורז אדום אחרי בישול, כוס",p:5,c:"א"},{n:"אורז אדום לפני בישול, כוס",p:15,c:"א"},{n:"אורז בסמטי לפני בישול, 100 גרם",p:9,c:"א"},{n:"אורז בר אחרי בישול, כוס",p:4,c:"א"},{n:"אורז בר לפני בישול, כוס",p:12,c:"א"},{n:"אורז חום מלא לפני בישול, 100 גרם",p:11,c:"א"},{n:"אורז לבן אחרי בישול, כוס",p:5,c:"א"},{n:"אורז לבן לפני בישול, כוס",p:15,c:"א"},{n:"אורז לבן לפני בישול, 100 גרם",p:9,c:"א"},{n:"אורז לסושי אחרי בישול, כוס",p:5,c:"א"},{n:"אורז מלא אחרי בישול, כוס",p:5,c:"א"},{n:"אורז מלא לפני בישול, כוס",p:15,c:"א"},{n:"אטריות אורז אחרי בישול, כוס",p:5,c:"א"},{n:"אטריות אורז לפני בישול, כוס",p:15,c:"א"},{n:"אטריות ביצים אחרי בישול, כוס",p:5,c:"א"},{n:"אטריות ביצים לפני בישול, כוס",p:10,c:"א"},{n:"אטריות חיטה מלאה אחרי בישול, כוס",p:4.5,c:"א",s:1},{n:"אטריות לזניה, 100 גרם",p:9,c:"א"},{n:"אטריות צורות שונות אחרי בישול, כוס",p:5,c:"א"},{n:"אטריות צורות שונות לפני בישול, 100 גרם",p:9,c:"א"},{n:"אטריות שעועית אחרי בישול, כוס",p:4,c:"א"},{n:"אינסטנט פודינג אבקה, שקית",p:8,c:"א"},{n:"אנונה, חצי יחידה",p:2,c:"א"},{n:"אננס טרי, פרוסה 40 גרם",p:1,c:"א"},{n:"אננס מיובש ללא סוכר, 100 גרם",p:7,c:"א"},{n:"אננס מיובש מסוכר, 100 גרם",p:9,c:"א"},{n:"אננס משומר בסירופ קל, 100 גרם",p:2,c:"א"},{n:"אספרגוס",p:0,c:"א",s:1},{n:"אפונה ירוקה, 100 גרם",p:1,c:"א",s:1},{n:"אפונה ירוקה, כוס",p:2.5,c:"א",s:1},{n:"אפונה יבשה אחרי בישול, 100 גרם",p:3,c:"א",s:1},{n:"אפרסמון יחידה בינונית",p:2,c:"א",s:1},{n:"אפרסק בינוני",p:2,c:"א",s:1},{n:"אפרסק בסירופ, 100 גרם",p:3,c:"א"},{n:"אצות ים, 100 גרם",p:1,c:"א",s:1},{n:"ארוגולה",p:0,c:"א",s:1},{n:"ארטישוק לב, 2 יחידות",p:0,c:"א",s:1},{n:"אריסה, כפית",p:0,c:"א"},{n:"אריסה, כף",p:0.5,c:"א"},{n:"אשכולית קלופה, 250 גרם",p:2,c:"א",s:1},
+{n:"באגט שלם, יחידה",p:19,c:"ב"},{n:"בוטנים קלויים, 100 גרם",p:16,c:"ב"},{n:"בוטנים קלויים, כוס",p:22,c:"ב"},{n:"בורגול יבש לפני בישול, 100 גרם",p:6,c:"ב",s:1},{n:"בורגול יבש לפני בישול, כוס",p:13,c:"ב",s:1},{n:"בורגול אחרי בישול, כוס",p:4,c:"ב",s:1},{n:"בורקס יחידה קטנה",p:5,c:"ב"},{n:"בורקס יחידה גדולה",p:10,c:"ב"},{n:"בטטה קטנה, 100 גרם",p:2,c:"ב",s:1},{n:"בייגלה חטיף, 100 גרם",p:10,c:"ב"},{n:"בייגלה חטיף, שקית 30 גרם",p:3,c:"ב"},{n:"ביסקויט פתיבר, יחידה",p:1,c:"ב"},{n:"ביצה, יחידה",p:2,c:"ב",s:1},{n:"ביצה 3 חלבונים",p:1,c:"ב",s:1},{n:"ביצה חלמון יחידה",p:1.5,c:"ב"},{n:"בישקוטים, יחידה",p:1,c:"ב"},{n:"במיה",p:0,c:"ב",s:1},{n:"בננה, יחידה",p:2,c:"ב"},{n:"בננות מטוגנות, 100 גרם",p:9,c:"ב"},{n:"בצל יבש",p:0,c:"ב",s:1},{n:"בצל ירוק",p:0,c:"ב",s:1},{n:"בצק עלים, 100 גרם",p:10,c:"ב"},{n:"בצק פילו, 100 גרם",p:7,c:"ב"},{n:"בצק פריך, 100 גרם",p:12,c:"ב"},{n:"ברוקולי",p:0,c:"ב",s:1},{n:"בשר אווז כבד טרי, 100 גרם",p:3,c:"ב"},{n:"בשר בקר המבורגר, יחידה 80 גרם",p:4,c:"ב"},{n:"בשר בקר טחון לפני בישול, 100 גרם",p:6,c:"ב"},{n:"בשר בקר סטייק אנטריקוט לפני בישול, 100 גרם",p:6,c:"ב"},{n:"בשר בקר סטייק סינטה לפני בישול, 100 גרם",p:4,c:"ב"},{n:"בשר בקר סטייק פילה לפני בישול, 100 גרם",p:4,c:"ב"},{n:"בשר בקר רזה לפני בישול, 100 גרם",p:4,c:"ב"},{n:"בשר בקר רזה אחרי בישול, 100 גרם",p:5,c:"ב"},{n:"בשר בקר שמן לפני בישול, 100 גרם",p:8,c:"ב"},{n:"בשר הודו חזה, 100 גרם",p:3,c:"ב",s:1},{n:"בשר הודו טחון לפני בישול, 100 גרם",p:4,c:"ב"},{n:"בשר הודו שוק ללא עור, 250 גרם",p:9,c:"ב"},{n:"בשר עוף חזה לפני בישול, 100 גרם",p:3,c:"ב",s:1},{n:"בשר עוף ירך לפני בישול, 100 גרם",p:3,c:"ב",s:1},{n:"בשר עוף כרע בינונית ללא עור",p:5,c:"ב",s:1},{n:"בשר עוף כנף לפני ואחרי בישול",p:3,c:"ב"},{n:"בשר עוף שוק בינונית ללא עור",p:2,c:"ב",s:1},{n:"בשר עוף שניצל דק, 90 גרם",p:7,c:"ב"},{n:"בשר עוף שניצל מטוגן ביתי, 100 גרם",p:8,c:"ב"},{n:"בשר עוף שניצל קנוי, יחידה 100 גרם",p:6,c:"ב"},{n:"בשר עוף פרגית שיפוד, 100 גרם",p:4,c:"ב",s:1},{n:"בשר עוף קציצות, יחידה 40 גרם",p:1,c:"ב"},
+{n:"גבינה בולגרית 3%, 100 גרם",p:2,c:"ג"},{n:"גבינה בולגרית 5%, 100 גרם",p:3,c:"ג"},{n:"גבינה בולגרית 16%, 100 גרם",p:6,c:"ג"},{n:"גבינה גאודה 28%, פרוסה 25 גרם",p:2.5,c:"ג"},{n:"גבינה גאודה 28%, 100 גרם",p:10,c:"ג"},{n:"גבינה חלומי 24%, 100 גרם",p:8,c:"ג"},{n:"גבינה לבנה 3%, קופסה 250 גרם",p:5,c:"ג"},{n:"גבינה לבנה 5%, כף",p:0.5,c:"ג"},{n:"גבינה לבנה 9%, קופסה 250 גרם",p:9,c:"ג"},{n:"גבינה מוצרלה 18%, 100 גרם",p:6.5,c:"ג"},{n:"גבינה פרמזן 18%, כף",p:1,c:"ג"},{n:"גבינה פרמזן 23%, 100 גרם",p:9,c:"ג"},{n:"גבינה צפתית 5%, 100 גרם",p:3,c:"ג"},{n:"גבינה צהובה 5%, פרוסה 25 גרם",p:1,c:"ג"},{n:"גבינה צהובה 22%, פרוסה 25 גרם",p:2,c:"ג"},{n:"גבינה צהובה 28%, פרוסה 25 גרם",p:2.5,c:"ג"},{n:"גבינה קוטג 1%, קופסה 250 גרם",p:4,c:"ג",s:1},{n:"גבינה קוטג 3%, קופסה 250 גרם",p:5,c:"ג",s:1},{n:"גבינה קוטג 5%, קופסה 250 גרם",p:6,c:"ג"},{n:"גבינה קוטג 9%, קופסה 250 גרם",p:8,c:"ג"},{n:"גבינת עיזים 9%, 100 גרם",p:6,c:"ג"},{n:"גבינת שמנת 3%, כף",p:0.5,c:"ג"},{n:"גבינת שמנת 5%, 100 גרם",p:3,c:"ג"},{n:"גויאבה יחידה",p:2,c:"ג"},{n:"גזר",p:0,c:"ג",s:1},{n:"גלידה 2%, 100 גרם",p:3,c:"ג"},{n:"גלידה חלבית, 100 גרם",p:6,c:"ג"},{n:"גלידת סורבה, 100 גרם",p:3,c:"ג"},{n:"גמבה",p:0,c:"ג",s:1},{n:"גרגר נחלים",p:0,c:"ג",s:1},{n:"גריסי פנינה אחרי בישול, כוס",p:5,c:"ג",s:1},{n:"גריסי פנינה לפני בישול, 100 גרם",p:7,c:"ג",s:1},{n:"גרנולה לייט, 100 גרם",p:7,c:"ג"},{n:"גרנולה לייט, כף",p:1,c:"ג"},{n:"גרנולה עם פירות יבשים, 30 גרם",p:3,c:"ג"},{n:"גרנולה רגילה, 100 גרם",p:9,c:"ג"},{n:"גרנולה רגילה, 2 כפות",p:3,c:"ג"},{n:"גרעיני דלעת עם קליפה, 100 גרם",p:7,c:"ג"},{n:"גרעיני דלעת ללא קליפה, 100 גרם",p:15,c:"ג"},{n:"גרעיני חמנייה עם קליפה, 100 גרם",p:7,c:"ג"},{n:"גרעיני חמנייה ללא קליפה, 100 גרם",p:15,c:"ג"},
+{n:"דבש, כפית",p:1,c:"ד"},{n:"דבש, כף שטוחה",p:2,c:"ד"},{n:"דבש, 100 גרם",p:9,c:"ד"},{n:"דג אמנון אחרי בישול, 100 גרם",p:3,c:"ד",s:1},{n:"דג אמנון לפני בישול, 100 גרם",p:2.5,c:"ד",s:1},{n:"דג בורי אחרי בישול, 100 גרם",p:3,c:"ד",s:1},{n:"דג בס פילה, 100 גרם",p:4,c:"ד",s:1},{n:"דג ברבוניה אחרי בישול, 100 גרם",p:3,c:"ד",s:1},{n:"דג דניס אחרי בישול, 100 גרם",p:6,c:"ד",s:1},{n:"דג הליבוט פילה, 100 גרם",p:3,c:"ד",s:1},{n:"דג טונה במים, קופסה 120 גרם",p:2.5,c:"ד",s:1},{n:"דג טונה בשמן מסוננת, קופסה 120 גרם",p:5,c:"ד"},{n:"דג טונה אדומה טרי, 100 גרם",p:4,c:"ד",s:1},{n:"דג טונה מעושן, 100 גרם",p:3,c:"ד",s:1},{n:"דג לברק, 100 גרם",p:2,c:"ד",s:1},{n:"דג לוקוס לפני בישול, 100 גרם",p:2,c:"ד",s:1},{n:"דג לוקוס אחרי בישול, 100 גרם",p:3,c:"ד",s:1},{n:"דג מקרל מעושן, 100 גרם",p:5,c:"ד"},{n:"דג נסיכת הנילוס אחרי בישול, 100 גרם",p:3,c:"ד",s:1},{n:"דג סלמון אחרי בישול, 100 גרם",p:4,c:"ד",s:1},{n:"דג סלמון לפני בישול, 100 גרם",p:3,c:"ד",s:1},{n:"דג סלמון מעושן, 100 גרם",p:5,c:"ד"},{n:"דג סלמון מעושן פרוסה, 30 גרם",p:2,c:"ד"},{n:"דג סרדינים משומר, 85 גרם",p:4,c:"ד"},{n:"דג שניצל עם פרורי לחם, 100 גרם",p:5,c:"ד"},{n:"דגני בוקר ללא תוספת סוכר, 30 גרם",p:3,c:"ד"},{n:"דגני בוקר עשירים בסיבים, 30 גרם",p:2,c:"ד"},{n:"דגנים מתוקים, 30 גרם",p:4,c:"ד"},{n:"דובדבנים טריים, כוס 100 גרם",p:2,c:"ד",s:1},{n:"דוחן לפני בישול, 100 גרם",p:8,c:"ד",s:1},{n:"דוחן אחרי בישול, כוס",p:3,c:"ד",s:1},{n:"דלעת",p:0,c:"ד",s:1},{n:"דלורית, 100 גרם",p:1,c:"ד",s:1},
+{n:"המבורגר מן הצומח, יחידה 80 גרם",p:3,c:"ה"},{n:"המבורגר על האש, 300 גרם ללא לחמנייה",p:16,c:"ה"},{n:"וויסקי/וודקה, כוסית 40 מ\"ל",p:4,c:"ו"},{n:"ופל מצופה, יחידה 20 גרם",p:3,c:"ו"},{n:"זיתים, 5 יחידות",p:1,c:"ז"},{n:"זיתים, 100 גרם",p:5,c:"ז"},{n:"זיתים ממרח, כף שטוחה",p:1,c:"ז"},{n:"זנגביל טרי",p:0,c:"ז",s:1},{n:"זרעי פשתה, כף",p:2,c:"ז"},{n:"זרעי צ'יה, כף",p:1,c:"ז"},
+{n:"חבוש בינוני",p:2,c:"ח",s:1},{n:"חביתית ללא מילוי, יחידה",p:2,c:"ח"},{n:"חביתית במלית גבינה מתוקה 5%, יחידה",p:4,c:"ח"},{n:"חומוס גרגירים יבש, 100 גרם",p:8,c:"ח",s:1},{n:"חומוס גרגירים יבש, כוס",p:13,c:"ח",s:1},{n:"חומוס גרגירים אחרי בישול, כוס",p:6,c:"ח",s:1},{n:"חומוס גרגירים מבושל, 100 גרם",p:4,c:"ח",s:1},{n:"חומוס סלט מופחת שומן, 100 גרם",p:6,c:"ח"},{n:"חומוס סלט, כף שטוחה",p:1,c:"ח"},{n:"חומוס סלט, 100 גרם",p:8,c:"ח"},{n:"חומץ",p:0,c:"ח"},{n:"חזרת, כף שטוחה",p:1,c:"ח"},{n:"חטיף בוטנים מותפח, שקית 25 גרם",p:4,c:"ח"},{n:"חטיף דגנים עד 5% שומן, יחידה",p:2,c:"ח"},{n:"חטיף טורטיה תירס, שקית 60 גרם",p:7,c:"ח"},{n:"חטיף צ'יפס, שקית 50 גרם",p:8,c:"ח"},{n:"חלב 1%, כוס 250 מ\"ל",p:2.5,c:"ח",s:1},{n:"חלב 3%, כוס 250 מ\"ל",p:4,c:"ח"},{n:"חלב קוקוס, כוס",p:15,c:"ח"},{n:"חלבה, 100 גרם",p:14,c:"ח"},{n:"חמאת בוטנים, כף שטוחה",p:2,c:"ח"},{n:"חמאת בוטנים, 100 גרם",p:16,c:"ח"},{n:"חמוציות מיובשות, 100 גרם",p:9,c:"ח"},{n:"חמוציות מיובשות, 14 יחידות",p:1,c:"ח"},{n:"חסה",p:0,c:"ח",s:1},{n:"חצילים",p:0,c:"ח",s:1},{n:"חציל בטחינה סלט, 100 גרם",p:7,c:"ח"},{n:"חציל במיונז סלט, 100 גרם",p:5,c:"ח"},{n:"חצילים על האש, 100 גרם",p:4,c:"ח"},{n:"חרדל מוכן, כף",p:0.5,c:"ח"},{n:"חרובים, 100 גרם",p:3,c:"ח",s:1},{n:"ממרח חרובים, כף שטוחה",p:3,c:"ח"},{n:"ממרח חרובים, 100 גרם",p:15,c:"ח"},
+{n:"טחינה גולמית, כפית",p:1,c:"ט"},{n:"טחינה גולמית, כף 15 גרם",p:3,c:"ט"},{n:"טחינה גולמית, 100 גרם",p:19,c:"ט"},{n:"טחינה מוכנה, כף",p:1,c:"ט"},{n:"טחינה מוכנה, 100 גרם",p:9,c:"ט"},{n:"טופו 7.5%, 100 גרם",p:4,c:"ט",s:1},{n:"טופו ממרח 28%, כף",p:2,c:"ט"},{n:"טמפה, 100 גרם",p:5,c:"ט",s:1},{n:"טורטיה גדולה, יחידה 70 גרם",p:4,c:"ט"},{n:"טורטיה קטנה, יחידה 40 גרם",p:2.5,c:"ט"},{n:"טורטיה קמח מלא, יחידה 50 גרם",p:3,c:"ט",s:1},
+{n:"יוגורט 0%, גביע 200 גרם",p:2,c:"י"},{n:"יוגורט 0%, גביע 150 גרם",p:1,c:"י"},{n:"יוגורט 1.5%, גביע 200 גרם",p:2.5,c:"י"},{n:"יוגורט 3%, גביע 200 גרם",p:3,c:"י"},{n:"יוגורט פרי 3%, גביע 150 גרם",p:4,c:"י"},{n:"יוגורט עיזים 4%, גביע 250 גרם",p:4,c:"י"},{n:"ירקות",p:0,c:"י",s:1},{n:"ירקות מוחמצים",p:0,c:"י",s:1},
+{n:"כוסמת אחרי בישול, כוס",p:4,c:"כ",s:1},{n:"כוסמת לפני בישול, 100 גרם",p:9,c:"כ",s:1},{n:"כרוב",p:0,c:"כ",s:1},{n:"כרובית",p:0,c:"כ",s:1},{n:"כרוב ניצנים",p:0,c:"כ",s:1},{n:"כרשה",p:0,c:"כ",s:1},
+{n:"לבבות דקל, משומר",p:0,c:"ל",s:1},{n:"לוביה אחרי בישול, 100 גרם",p:3,c:"ל",s:1},{n:"לוביה יבשה, 100 גרם",p:8,c:"ל",s:1},{n:"לחם אחיד לבן/שחור, פרוסה 30 גרם",p:2,c:"ל"},{n:"לחם דגנים, פרוסה 30 גרם",p:1,c:"ל",s:1},{n:"לחם כוסמין, פרוסה 30 גרם",p:1.5,c:"ל"},{n:"לחם קל, פרוסה 40 גרם",p:1,c:"ל",s:1},{n:"לחם שיפון, פרוסה 30 גרם",p:1,c:"ל",s:1},{n:"לחמנייה ארוכה רגילה, יחידה 80 גרם",p:6,c:"ל"},{n:"לחמנייה מחיטה מלאה, יחידה 75 גרם",p:5,c:"ל",s:1},{n:"לחמנייה קלה, יחידה 50 גרם",p:2,c:"ל",s:1},{n:"לחמניית המבורגר גדולה, 120 גרם",p:8,c:"ל"},{n:"לאפה, יחידה",p:15,c:"ל"},{n:"פיתה רגילה, יחידה 100 גרם",p:6,c:"ל"},{n:"פיתה מחיטה מלאה, יחידה 75 גרם",p:5,c:"ל",s:1},{n:"פיתה קלה, יחידה 80 גרם",p:3,c:"ל",s:1},{n:"בייגל אמריקאי, יחידה",p:7,c:"ל"},{n:"בייגל ירושלמי, יחידה",p:7,c:"ל"},{n:"לימון/ליים",p:0,c:"ל",s:1},{n:"ליצ'י טרי, 6 יחידות",p:2,c:"ל"},{n:"לפת",p:0,c:"ל",s:1},
+{n:"מיונז, כף שטוחה",p:2,c:"מ"},{n:"מיונז לייט, 2 כפות",p:1.5,c:"מ"},{n:"מלאווח, יחידה 160 גרם",p:18,c:"מ"},{n:"מלון, כוס 200 גרם",p:2,c:"מ"},{n:"מלפפון",p:0,c:"מ",s:1},{n:"ממרח פסטו, כף שטוחה",p:2,c:"מ"},{n:"ממרח שוקולד, כף שטוחה",p:3,c:"מ"},{n:"ממרח שקדים, כף",p:2,c:"מ"},{n:"ממרח תמרים, כף שטוחה",p:2,c:"מ"},{n:"ממרח תמרים, 100 גרם",p:7,c:"מ"},{n:"ממתיק מלאכותי, שקית",p:0,c:"מ"},{n:"מנגו קוביות, חצי כוס",p:2,c:"מ"},{n:"מצה",p:3,c:"מ"},{n:"מרגרינה רכה/לייט, כפית",p:1,c:"מ"},{n:"מרק אבקה, כף שטוחה",p:1,c:"מ"},{n:"מרק צח, ללא שומן",p:0,c:"מ"},{n:"מרשמלו, 4 יחידות",p:1,c:"מ"},{n:"משמש טרי, 3 יחידות קטנות",p:2,c:"מ"},{n:"משמש מיובש, 100 גרם",p:7,c:"מ"},{n:"יין אדום/לבן, כוסית 120 מ\"ל",p:3,c:"מ"},{n:"בירה קלה, פחית/בקבוק",p:1.5,c:"מ"},{n:"בירה רגילה, 330 מ\"ל",p:4,c:"מ"},{n:"מיץ פרי, כוס 250 מ\"ל",p:3,c:"מ"},{n:"מיץ ענבים, כוס 250 מ\"ל",p:5,c:"מ"},{n:"מיץ גזר, כוס 250 מ\"ל",p:2,c:"מ"},{n:"משקה דיאט מוגז",p:0,c:"מ"},
+{n:"נבטוטים, 100 גרם",p:3,c:"נ",s:1},{n:"נבטי אלפלפה/שעועית/ברוקולי",p:0,c:"נ",s:1},{n:"ניוקי תפוחי אדמה לפני בישול, 100 גרם",p:4,c:"נ"},{n:"ניוקי תפוחי אדמה אחרי בישול, כוס",p:6,c:"נ"},{n:"נקטרינה יחידה בינונית",p:2,c:"נ",s:1},{n:"נקניק יבש קבנוס, 50 גרם",p:5,c:"נ"},{n:"נקניק יבש סלמי, 100 גרם",p:7,c:"נ"},{n:"נקניקייה, יחידה 36 גרם",p:2,c:"נ"},{n:"נקניקייה מן הצומח גדולה, 33 גרם",p:2,c:"נ"},
+{n:"סברס, יחידה 75 גרם",p:1,c:"ס",s:1},{n:"סובין חיטה, כף",p:0,c:"ס",s:1},{n:"סובין שיבולת שועל, כף",p:0.5,c:"ס",s:1},{n:"סוכר לבן/חום, כפית שטוחה",p:1,c:"ס"},{n:"סוכר לבן/חום, כף שטוחה",p:2,c:"ס"},{n:"סוכריות גומי דלות קלוריות, 100 גרם",p:3,c:"ס"},{n:"סוכריות גומי רגילות, 100 גרם",p:10,c:"ס"},{n:"סולת לפני בישול, 100 גרם",p:9,c:"ס"},{n:"סולת לפני בישול, כוס 180 גרם",p:16,c:"ס"},{n:"סולת מבושלת, כף",p:1,c:"ס"},{n:"סופגנייה בינונית ללא תוספות",p:8,c:"ס"},{n:"סושי קטן מאקי, 6 יחידות",p:3,c:"ס"},{n:"סושי בינוני אינסיידאאוט, 6 יחידות",p:4,c:"ס"},{n:"סושי גדול פוטומאקי, 6 יחידות",p:6,c:"ס"},{n:"סושי ניגירי, 6 יחידות",p:3,c:"ס"},{n:"סילאן, כפית שטוחה",p:1,c:"ס"},{n:"סילאן, כף שטוחה",p:2,c:"ס"},{n:"סירופ שוקולד/מייפל/קרמל, כף",p:1,c:"ס"},{n:"סלטים מוכנים מכל סוג, כף שטוחה",p:1,c:"ס"},{n:"סלט גזר מרוקאי, 100 גרם",p:3,c:"ס"},{n:"סלק",p:0,c:"ס",s:1},{n:"סלרי עלים",p:0,c:"ס",s:1},
+{n:"עגבניות",p:0,c:"ע",s:1},{n:"עגבניות מיובשות בשמן, כף שטוחה",p:1,c:"ע"},{n:"עגבניות מיובשות בשמן, 100 גרם",p:12,c:"ע"},{n:"עגבניות מרוסקות, שימורים, 100 גרם",p:0,c:"ע",s:1},{n:"עדשים אחרי בישול, 100 גרם",p:3,c:"ע",s:1},{n:"עדשים אחרי בישול, כוס",p:5,c:"ע",s:1},{n:"עדשים לפני בישול, 100 גרם",p:7,c:"ע",s:1},{n:"עוגה בחושה בטעמים, פרוסה 30 גרם",p:3,c:"ע"},{n:"עוגה עם קרם, פרוסה 30 גרם",p:4,c:"ע"},{n:"עוגיית בוטנים/קוקוס פסח, יחידה",p:4,c:"ע"},{n:"עוגיית דובשנית, יחידה 10 גרם",p:1,c:"ע"},{n:"עוגייה מזרחית, יחידה 26 גרם",p:3,c:"ע"},{n:"עולש",p:0,c:"ע",s:1},{n:"עירית",p:0,c:"ע",s:1},{n:"עלים (בייבי גראס, סיני)",p:0,c:"ע",s:1},{n:"עמבה, כף",p:0.5,c:"ע"},{n:"ענבים, 12 יחידות",p:2,c:"ע"},{n:"ערמונים קלויים, 100 גרם",p:6,c:"ע"},{n:"עשבי תיבול",p:0,c:"ע",s:1},
+{n:"פול ירוק קפוא, 100 גרם",p:2,c:"פ",s:1},{n:"פול לסוגיו אחרי בישול, כוס",p:3,c:"פ",s:1},{n:"פומלה קלופה, רבע",p:2,c:"פ"},{n:"פופקורן גרעינים ללא שמן, 30 גרם",p:3,c:"פ"},{n:"פופקורן קטן בסרט",p:9,c:"פ"},{n:"פופקורן בינוני בסרט",p:15,c:"פ"},{n:"פופקורן גדול בסרט",p:19,c:"פ"},{n:"פטל טרי, כוס",p:2,c:"פ"},{n:"פטריות",p:0,c:"פ",s:1},{n:"פיסטוק חלבי בלי קליפה, 100 גרם",p:15,c:"פ"},{n:"פיסטוק חלבי עם קליפה, 100 גרם",p:8,c:"פ"},{n:"פיצה משולש בצק דק",p:6,c:"פ"},{n:"פיצה משולש בצק עבה",p:9,c:"פ"},{n:"פלאפל כדור",p:2,c:"פ"},{n:"פלפל אדום/ירוק/צהוב",p:0,c:"פ",s:1},{n:"פסטרמה דלת שומן 1%, 100 גרם",p:2,c:"פ",s:1},{n:"פסיפלורה, 8 יחידות 100 גרם",p:2,c:"פ"},{n:"פפאיה, 100 גרם",p:1,c:"פ",s:1},{n:"פפאיה מיובשת, 100 גרם",p:5,c:"פ"},{n:"פרג, כף",p:2,c:"פ"},{n:"פרג, 100 גרם",p:16,c:"פ"},{n:"פריכיות, יחידה גדולה",p:1,c:"פ"},{n:"פריקה אחרי בישול, כוס",p:4,c:"פ",s:1},{n:"פריקה לפני בישול, 100 גרם",p:7,c:"פ",s:1},{n:"פתיתים אחרי בישול, כוס",p:7,c:"פ"},{n:"פתיתים לפני בישול, 100 גרם",p:10,c:"פ"},
+{n:"צ'יה זרעים, כף",p:1,c:"צ"},{n:"צ'יפס במיקרו/בתנור מוכן, 100 גרם",p:5,c:"צ"},{n:"צימוקים, כף שטוחה",p:2,c:"צ"},{n:"צימוקים, 100 גרם",p:8,c:"צ"},{n:"צנובר, 100 גרם",p:18,c:"צ"},{n:"צנובר, כף",p:2,c:"צ"},{n:"צנון/צנונית",p:0,c:"צ",s:1},
+{n:"קובה מבושלת",p:3,c:"ק"},{n:"קובה מטוגנת במילוי בשר, יחידה 50 גרם",p:7,c:"ק"},{n:"קוואקר שיבולת שועל, כף",p:1,c:"ק"},{n:"קוואקר שיבולת שועל, 100 גרם",p:9,c:"ק",s:1},{n:"קוואקר שיבולת שועל, כוס 125 גרם",p:12,c:"ק",s:1},{n:"קולורבי",p:0,c:"ק",s:1},{n:"קוסקוס מלא/רגיל אחרי בישול, כוס",p:4,c:"ק"},{n:"קוסקוס מלא/רגיל לפני בישול, 100 גרם",p:9,c:"ק"},{n:"קוקוס טחון, כף שטוחה",p:2,c:"ק"},{n:"קוקוס נוזל, כוס 250 מ\"ל",p:4,c:"ק"},{n:"קיווי, 2 יחידות",p:2,c:"ק"},{n:"קינואה לפני בישול, 100 גרם",p:9,c:"ק",s:1},{n:"קינואה אחרי בישול, כוס",p:5,c:"ק",s:1},{n:"קישוא",p:0,c:"ק",s:1},{n:"קלמנטינה, יחידה",p:2,c:"ק"},{n:"קמח רגיל, כף שטוחה",p:1,c:"ק"},{n:"קמח רגיל, 100 גרם",p:9,c:"ק"},{n:"קמח מלא, 100 גרם",p:7,c:"ק",s:1},{n:"קמח תירס, 100 גרם",p:9,c:"ק"},{n:"קמח שקדים, 100 גרם",p:17,c:"ק"},{n:"קמח תופח, 100 גרם",p:9,c:"ק"},{n:"קטשופ, 2 כפות",p:1,c:"ק"},{n:"קרמבו, יחידה",p:3,c:"ק"},{n:"קקאו אבקה ממותקת, כף שטוחה",p:1,c:"ק"},{n:"קקאו אבקה לא ממותקת, 100 גרם",p:7,c:"ק"},{n:"קרוטונים, 100 גרם",p:14,c:"ק"},
+{n:"ריבה, כף שטוחה",p:2,c:"ר"},{n:"ריבה לייט, כף שטוחה",p:1,c:"ר"},{n:"ריבת חלב, כף שטוחה",p:2,c:"ר"},{n:"רימון גרגירים, חצי כוס 100 גרם",p:2,c:"ר"},{n:"רסק עגבניות, 2 כפות",p:1,c:"ר"},{n:"רוטב סויה, כף",p:1,c:"ר"},{n:"רוטב פסטה, 400 גרם",p:7,c:"ר"},{n:"רוטב ברביקיו, 2 כפות",p:1,c:"ר"},{n:"רוטב וינגרט, 2 כפות",p:4,c:"ר"},{n:"רוטב חמוץ מתוק, כף",p:1,c:"ר"},{n:"רוטב צ'ילי מתוק, 100 גרם",p:6,c:"ר"},
+{n:"שום",p:0,c:"ש",s:1},{n:"שומר",p:0,c:"ש",s:1},{n:"שומשום, כף",p:2,c:"ש"},{n:"שומשום, 100 גרם",p:18,c:"ש"},{n:"שוקולד 60-70% קקאו, 100 גרם",p:17,c:"ש"},{n:"שוקולד חלב/מריר, חבילה 100 גרם",p:14,c:"ש"},{n:"שוקולד חלב/מריר, 4 קוביות",p:2,c:"ש"},{n:"שוקולד ממרח, כף שטוחה",p:3,c:"ש"},{n:"שזיף, 2 יחידות",p:2,c:"ש"},{n:"שזיפים יבשים, 2 יחידות",p:2,c:"ש"},{n:"שזיפים יבשים, 100 גרם",p:6,c:"ש"},{n:"שמן מהצומח מכל סוג, כפית",p:1,c:"ש"},{n:"שמן מהצומח מכל סוג, כף",p:3,c:"ש"},{n:"שניצל עוף דק, 90 גרם",p:7,c:"ש"},{n:"שניצל עוף מטוגן ביתי, 100 גרם",p:8,c:"ש"},{n:"שניצל עוף קנוי, יחידה 100 גרם",p:6,c:"ש"},{n:"שניצל ירקות מן הצומח, יחידה 80 גרם",p:4,c:"ש"},{n:"שניצל תירס מן הצומח, יחידה 75 גרם",p:4,c:"ש"},{n:"שסק, 6 יחידות קטנות",p:2,c:"ש"},{n:"שעועית יבשה אחרי בישול, כוס",p:5,c:"ש",s:1},{n:"שעועית יבשה אחרי בישול, 100 גרם",p:2,c:"ש",s:1},{n:"שעועית ירוקה/צהובה טריה/קפואה",p:0,c:"ש",s:1},{n:"שקדים, 8 יחידות",p:2,c:"ש"},{n:"שקדים, כוס 125 גרם",p:25,c:"ש"},{n:"שקדים טחונים, 100 גרם",p:16,c:"ש"},
+{n:"תאנה טריה, יחידה",p:1,c:"ת"},{n:"תאנה יבשה, יחידה",p:1,c:"ת"},{n:"תאנים יבשות, 100 גרם",p:6,c:"ת"},{n:"תות שדה, כוס",p:1,c:"ת",s:1},{n:"תירס גמדי משומר, קופסה 210 גרם",p:2,c:"ת",s:1},{n:"תירס גרעינים קל, כוס",p:2,c:"ת",s:1},{n:"תירס גרעינים עם סוכר, 100 גרם",p:3,c:"ת"},{n:"תירס קלח בינוני, 100 גרם",p:2,c:"ת",s:1},{n:"תמר חלאוי, יחידה",p:1,c:"ת"},{n:"תמר לח, יחידה",p:1,c:"ת"},{n:"תמר מג'הול, יחידה",p:1.5,c:"ת"},{n:"תפוז, יחידה",p:2,c:"ת"},{n:"תפוז סיני, 10 יחידות",p:2,c:"ת"},{n:"תפוזים מיץ סחוט טרי, כוס 250 מ\"ל",p:3,c:"ת"},{n:"תפוח אדמה, 200 גרם",p:4,c:"ת",s:1},{n:"תפוח אדמה מחית ללא שומן, 100 גרם",p:2,c:"ת",s:1},{n:"תפוח אדמה חטיף צ'יפס, שקית 50 גרם",p:8,c:"ת"},{n:"תפוח עץ קטן",p:2,c:"ת"},{n:"תרד טרי/קפוא",p:0,c:"ת",s:1},
+// אכילה בחוץ
+{n:"ארוחת בוקר - אומלט גבינה וירקות",p:8,c:"x"},{n:"ארוחת בוקר קלה - ביצה, גבינה, זיתים ולחם קל",p:16,c:"x"},{n:"בייגל עם גבינה בולגרית 5% וזיתים",p:12,c:"x"},{n:"כריך סלמון וגבינת שמנת - לחם קל",p:14,c:"x"},{n:"כריך חלומי - לחם קל, גבינת חלומי, ירקות",p:18,c:"x"},{n:"כריך טונה - לחם קל, ירקות, טונה",p:11,c:"x"},{n:"כריך גבינה - לחם קל, גבינה 5%, ממרח עגבניות",p:10,c:"x"},{n:"כריך אבוקדו - לחם קל, ביצה קשה, אבוקדו, עגבנייה",p:10,c:"x"},{n:"כריך חזה עוף - לחם קל, חזה עוף, ירקות",p:16,c:"x"},{n:"כריך פסטרמה - פסטרמה, מיונז, חרדל, ירקות",p:10,c:"x"},{n:"מרק בצל עם גבינה צהובה",p:4,c:"x"},{n:"מרק עגבניות ואורז",p:6,c:"x"},{n:"מרק תירס עם רצועות חזה עוף",p:5,c:"x"},{n:"מרק מיסו",p:3,c:"x"},{n:"סלט יווני - זיתים, גבינה בולגרית 5% וירקות",p:7,c:"x"},{n:"סלט טונה - תירס, ביצה, טונה וירקות",p:9,c:"x"},{n:"סלט עוף - ירקות ורצועות עוף",p:4,c:"x"},{n:"סלט קינואה ובולגרית - קינואה, חמוציות וירקות",p:13,c:"x"},{n:"סלט חלומי - גבינת חלומי וירקות",p:11,c:"x"},{n:"חומוס - צלחת",p:15,c:"x"},{n:"פלאפל 4 יחידות בפיתה כולל ירקות וכף טחינה",p:15.5,c:"x"},{n:"שווארמה בפיתה עם חומוס וטחינה וירקות",p:13,c:"x"},{n:"שווארמה בצלחת עם ירקות מוחמצים",p:10,c:"x"},{n:"המבורגר על האש 150 גרם",p:8,c:"x"},{n:"חזה עוף על הגריל, פרוסה",p:4,c:"x"},{n:"סטייק אנטריקוט, 300 גרם",p:20,c:"x"},{n:"קבב מזרחי, יחידה",p:3,c:"x"},{n:"פיצה בצק דק, משולש",p:6,c:"x"},{n:"פיצה בצק עבה, משולש",p:9,c:"x"},{n:"ספגטי ברוטב בשר (בולונז), כוס",p:12,c:"x"},{n:"ספגטי ברוטב עגבניות, כוס",p:7,c:"x"},{n:"פסטה ברוטב שמנת פטריות, כוס",p:14,c:"x"},{n:"צ'יפס - מנה קטנה",p:6,c:"x"},{n:"צ'יפס - מנה רגילה",p:7,c:"x"},{n:"המבורגר רגיל בלחמנייה",p:15,c:"x"},{n:"נקניקייה בלחמנייה גדולה",p:9,c:"x"},{n:"ירקות בטמפורה, מנה",p:8,c:"x"},{n:"ירקות מוקפצים עם עוף, כוס",p:6,c:"x"},{n:"עוף חמוץ מתוק",p:11,c:"x"},{n:"סושי מטוגן, יחידה",p:3,c:"x"},{n:"אייס קפה, 350 מ\"ל",p:8,c:"x"},{n:"אייס קפה דל שומן ללא סוכר, 350 מ\"ל",p:4,c:"x"},{n:"קפוצ'ינו 1%, כוס 250 מ\"ל",p:2,c:"x"},{n:"שוקו חם, 350 מ\"ל",p:12,c:"x"},{n:"מילקשייק, 350 מ\"ל",p:12,c:"x"},{n:"גלידה כדור, חצי כוס",p:6,c:"x"},{n:"סורבה פירות כדור, חצי כוס",p:3,c:"x"},{n:"באקלוואה, יחידה",p:10,c:"x"},{n:"קרואסון גבינה/שוקולד, יחידה קטנה",p:6,c:"x"},{n:"קרואסון גדול בטעמים שונים",p:12,c:"x"},{n:"טירמיסו",p:12.5,c:"x"},{n:"לזנייה בשרית, מנה",p:10,c:"x"}
+];
+
+const CATS=["א","ב","ג","ד","ה","ו","ז","ח","ט","י","כ","ל","מ","נ","ס","ע","פ","צ","ק","ר","ש","ת","x"];
+const CLABELS={"x":"🍽️ אכילה בחוץ"};
+
+// ── STATE ──
+let DB={}, bud=30, acCat=null;
+let viewOffset=0; // 0=today, 1=tomorrow, -1=yesterday, etc.
+
+function p2(n){return String(n).padStart(2,'0');}
+function dateByOffset(off){const d=new Date();d.setDate(d.getDate()+off);return d;}
+function keyByOffset(off){const d=dateByOffset(off);return`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;}
+function keyToDate(k){const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d);}
+function todayKey(){return keyByOffset(0);}
+function ft(ts){const d=new Date(ts);return`${p2(d.getHours())}:${p2(d.getMinutes())}`;}
+function fp(p){if(p===0)return'0';if(p!==Math.floor(p))return p.toString().replace('.5','½');return p.toString();}
+function formatDate(off){const d=dateByOffset(off);return`${d.getDate()} ב${['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'][d.getMonth()]} ${d.getFullYear()}`;}
+function dayName(off){const d=dateByOffset(off);if(off===0)return'היום';if(off===1)return'מחר';if(off===-1)return'אתמול';return`יום ${'ראשון שני שלישי רביעי חמישי שישי שבת'.split(' ')[d.getDay()]}`;}
+
+function load(){try{const r=localStorage.getItem('ww7db');if(r)DB=JSON.parse(r);}catch(e){DB={};}try{const b=localStorage.getItem('ww7b');if(b){bud=parseInt(b)||30;document.getElementById('bi').value=bud;}}catch(e){}}
+function save(){try{localStorage.setItem('ww7db',JSON.stringify(DB));}catch(e){}}
+function saveBud(){bud=parseInt(document.getElementById('bi').value)||30;try{localStorage.setItem('ww7b',bud);}catch(e){}updTodayBar();updateDayView();}
+
+function addToLog(name,pts){
+  // Always add to today regardless of which day we're viewing
+  const k=todayKey();
+  if(!DB[k])DB[k]=[];
+  DB[k].push({name,pts,time:Date.now(),id:Date.now()+Math.random()});
+  save();updTodayBar();
+  // Switch to log view on today if needed
+  if(document.getElementById('pgL').classList.contains('active')){
+    if(viewOffset!==0){viewOffset=0;updateDayNav();}
+    renderDayLog();buildWeekStrip();
+  }
+  showToast('✅ '+name.substring(0,26)+(name.length>26?'...':''));
+}
+
+function removeItem(dk,id){
+  if(!DB[dk])return;
+  DB[dk]=DB[dk].filter(i=>i.id!==id);
+  save();updTodayBar();renderDayLog();buildWeekStrip();
+}
+
+function resetCurrentDay(){
+  const k=keyByOffset(viewOffset);
+  if(!DB[k]||!DB[k].length)return;
+  const label=viewOffset===0?'היום':formatDate(viewOffset);
+  if(confirm(`לאפס את כל הרישום של ${label}?`)){DB[k]=[];save();updTodayBar();renderDayLog();buildWeekStrip();showToast('🔄 יום אופס');}
+}
+
+// Today's budget bar (always shows today)
+function updTodayBar(){
+  const items=DB[todayKey()]||[];
+  const used=items.reduce((s,i)=>s+i.pts,0),rem=bud-used,pct=Math.min((used/bud)*100,100);
+  const uE=document.getElementById('uv'),rE=document.getElementById('rv');
+  uE.textContent=fp(used);uE.className='bv'+(used>bud?' r':used>=bud*.8?' w':'');
+  rE.textContent=fp(rem);rE.className='bv'+(rem<0?' r':rem<bud*.2?' w':'');
+  const f=document.getElementById('pf');f.style.width=pct+'%';f.className='pgf'+(pct>=100?' r':pct>=80?' w':'');
+}
+
+// Current viewed day bar
+function updateDayView(){updateDayNav();renderDayLog();}
+
+function updateDayNav(){
+  const d=dateByOffset(viewOffset);
+  const isToday=viewOffset===0;
+  const dn=document.getElementById('dnDate');
+  dn.textContent=`יום ${'ראשון שני שלישי רביעי חמישי שישי שבת'.split(' ')[d.getDay()]}, ${formatDate(viewOffset)}`;
+  dn.className='dn-date'+(isToday?' today':'');
+  document.getElementById('dnSub').textContent=isToday?'לחצי לחזור להיום':'לחצי לחזור להיום';
+  document.getElementById('dnTodayBtn').disabled=isToday;
+
+  // Day budget bar for current view
+  const k=keyByOffset(viewOffset);
+  const items=DB[k]||[];
+  const used=items.reduce((s,i)=>s+i.pts,0),rem=bud-used,pct=Math.min((used/bud)*100,100);
+  const duE=document.getElementById('dUsed'),drE=document.getElementById('dRem');
+  duE.textContent=fp(used);duE.className='dbb-v'+(used>bud?' r':used>=bud*.8?' w':'');
+  drE.textContent=fp(rem);drE.className='dbb-v'+(rem<0?' r':rem<bud*.2?' w':'');
+  const dpf=document.getElementById('dpf');dpf.style.width=pct+'%';dpf.className='pgf'+(pct>=100?' r':pct>=80?' w':'');
+}
+
+function moveDay(dir){viewOffset+=dir;updateDayView();buildWeekStrip();}
+function goToday(){if(viewOffset!==0){viewOffset=0;updateDayView();buildWeekStrip();}}
+
+// WEEK STRIP — 14 days: 7 past + today + 6 future
+function buildWeekStrip(){
+  const c=document.getElementById('weekStrip');c.innerHTML='';
+  const DAY_SHORT=['א','ב','ג','ד','ה','ו','ש'];
+  // Show 7 days before viewOffset and 7 after — always centered on current view
+  for(let off=viewOffset-7;off<=viewOffset+7;off++){
+    const d=dateByOffset(off);
+    const k=keyByOffset(off);
+    const items=DB[k]||[];
+    const tot=items.reduce((s,i)=>s+i.pts,0);
+    const isToday=off===0;
+    const isActive=off===viewOffset;
+    const el=document.createElement('div');
+    el.className='wday'+(isActive?' active':'')+(isToday&&!isActive?' today-marker':'');
+    const ptsColor=tot>0?(tot>bud?'r':tot>=bud*.8?'w':'has'):'';
+    el.innerHTML=`<div class="wday-name">${DAY_SHORT[d.getDay()]}</div><div class="wday-num">${d.getDate()}</div><div class="wday-pts ${ptsColor}">${tot>0?fp(tot):'—'}</div><div class="wday-dot ${tot>0?'show':''}"></div>`;
+    el.onclick=(()=>{const o=off;return()=>{viewOffset=o;updateDayView();buildWeekStrip();}})();
+    c.appendChild(el);
+  }
+  // Scroll active into view
+  setTimeout(()=>{const active=c.querySelector('.wday.active');if(active)active.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});},50);
+}
+
+function renderDayLog(){
+  const k=keyByOffset(viewOffset);
+  const items=DB[k]||[];
+  const total=items.reduce((s,i)=>s+i.pts,0);
+  const oc=total>bud?'r':total>=bud*.8?'w':'';
+  const c=document.getElementById('lc');c.innerHTML='';
+  const isToday=viewOffset===0;
+  const label=isToday?'🗓 היום':`📅 ${dayName(viewOffset)}`;
+  const tt=document.createElement('div');tt.className='ltt';
+  tt.innerHTML=`<span>${label}</span><span class="dbg ${oc}">${fp(total)} / ${bud} נקודות</span>`;
+  c.appendChild(tt);
+  if(!items.length){
+    const e=document.createElement('div');e.className='el';
+    const msg=isToday?'עברי לחיפוש והוסיפי מזון.':'אין רישומים ליום זה.';
+    e.innerHTML=`<span class="em">🥗</span>עדיין לא הוספת מזון.<br>${msg}`;
+    c.appendChild(e);
+  } else {
+    [...items].reverse().forEach(item=>{
+      const el=document.createElement('div');el.className='li';
+      el.innerHTML=`<div class="lt">${ft(item.time)}</div><div class="ln">${item.name}</div><div class="lpts">${fp(item.pts)}</div><button class="rm" onclick="removeItem('${k}',${item.id})">🗑</button>`;
+      c.appendChild(el);
+    });
+  }
+}
+
+// ── SEARCH ──
+const CATS_DISPLAY=["א","ב","ג","ד","ה","ו","ז","ח","ט","י","כ","ל","מ","נ","ס","ע","פ","צ","ק","ר","ש","ת","x"];
+function buildChips(){const c=document.getElementById('cc');CATS_DISPLAY.forEach(cat=>{const ch=document.createElement('button');ch.className='chip';ch.textContent=CLABELS[cat]||cat;ch.onclick=()=>toggleCat(cat,ch);c.appendChild(ch);});}
+function toggleCat(cat,chip){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));if(acCat===cat){acCat=null;document.getElementById('cr').innerHTML='';return;}acCat=cat;chip.classList.add('active');const foods=F.filter(f=>f.c===cat);const c=document.getElementById('cr');c.innerHTML='';const t=document.createElement('div');t.className='rtit';t.textContent=(CLABELS[cat]||cat)+` — ${foods.length} פריטים`;c.appendChild(t);foods.forEach(f=>c.appendChild(mkFC(f)));}
+
+const FJ=JSON.stringify(F.map(f=>({n:f.n,p:f.p,s:f.s||0})));
+async function doSearch(){
+  const q=document.getElementById('si').value.trim();if(!q)return;
+  document.getElementById('ar').innerHTML='';document.getElementById('ld').style.display='block';document.getElementById('sb').disabled=true;
+  try{
+    const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`אתה עוזר חיפוש מזון לתוכנית שומרי משקל. ענה תמיד ב-JSON בלבד ללא שום טקסט נוסף.
+מבנה: {"results":[{"n":"שם מזון","p":נקודות,"s":0_או_1}],"msg":"הודעה קצרה בעברית"}
+חפש את המזון המבוקש ברשימה. החזר עד 8 תוצאות ממוינות לפי רלוונטיות. אם לא נמצא בדיוק, החזר מזונות דומים.
+רשימת המזונות: ${FJ}`,messages:[{role:"user",content:`חפש: "${q}"`}]})});
+    const data=await resp.json();const text=data.content?.[0]?.text||'{}';let parsed;
+    try{parsed=JSON.parse(text.replace(/```json|```/g,'').trim());}catch(e){parsed={results:localS(q),msg:`תוצאות עבור "${q}"`};}
+    renderRes(parsed);
+  }catch(e){renderRes({results:localS(q),msg:`נמצאו ${localS(q).length} תוצאות`});}
+  document.getElementById('ld').style.display='none';document.getElementById('sb').disabled=false;
+}
+function localS(q){const terms=q.toLowerCase().split(' ').filter(t=>t.length>1);return F.filter(f=>terms.every(t=>f.n.toLowerCase().includes(t))).slice(0,8).map(f=>({n:f.n,p:f.p,s:f.s||0}));}
+function renderRes(data){
+  const c=document.getElementById('ar');c.innerHTML='';
+  if(data.msg){const m=document.createElement('div');m.style.cssText='font-size:11px;color:var(--mut);padding:4px 2px 8px;';m.textContent='🤖 '+data.msg;c.appendChild(m);}
+  const res=data.results||[];
+  if(!res.length){c.innerHTML+='<div class="nores">🔍 לא נמצאו תוצאות. נסי מילים אחרות.</div>';return;}
+  const t=document.createElement('div');t.className='rtit';t.textContent='תוצאות חיפוש';c.appendChild(t);
+  res.forEach(item=>c.appendChild(mkFC(item)));
+}
+function mkFC(food){const el=document.createElement('div');el.className='fc';const safe=food.n.replace(/\\/g,'\\\\').replace(/'/g,"\\'");el.innerHTML=`<div class="fn">${food.s?'<span class="sb">★ על</span>':''}${food.n}</div><div class="fp">${fp(food.p)}</div><button class="ab" onclick="addToLog('${safe}',${food.p})">+</button>`;return el;}
+
+// ── PAGE NAV ──
+function showPg(p){
+  ['S','L'].forEach(x=>{
+    document.getElementById('pg'+x).classList.toggle('active',p===x.toLowerCase());
+    document.getElementById('t'+x).classList.toggle('active',p===x.toLowerCase());
+    document.getElementById('n'+x).classList.toggle('active',p===x.toLowerCase());
+  });
+  if(p==='l'){updateDayView();buildWeekStrip();}
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2300);}
+
+// ── INIT ──
+load();updTodayBar();buildChips();
+document.getElementById('si').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
+</script>
+</body>
+</html>
